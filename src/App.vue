@@ -1,24 +1,49 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
   <header>
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <LeftPart :msg="titleLeft" />
 
       <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/">Accueil</RouterLink>
+        <RouterLink to="/articles">Articles</RouterLink>
+        <RouterLink to="/contact">Contact</RouterLink>
       </nav>
     </div>
   </header>
 
   <RouterView />
 </template>
+
+<script setup>
+import { RouterLink, RouterView } from 'vue-router'
+import LeftPart from './components/LeftPart.vue'
+import { onMounted, onBeforeUnmount, ref } from 'vue'
+
+const titleLeft = ref('Accueil')
+
+function handleNavClick(event) {
+  titleLeft.value = ref(event.target.textContent)
+  // Utilisez linkText comme vous le souhaitez
+  console.log('RouterLink cliqué:', titleLeft)
+}
+
+let navEl = null
+
+onMounted(() => {
+  navEl = document.querySelector('nav')
+  if (navEl) {
+    navEl.addEventListener('click', handleNavClick)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (navEl) {
+    navEl.removeEventListener('click', handleNavClick)
+  }
+})
+</script>
 
 <style scoped>
 header {
