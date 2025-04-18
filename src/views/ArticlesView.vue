@@ -6,8 +6,7 @@
         <RouterLink
           :to="{
             name: 'article',
-            params: { articleId: article.id, article: article },
-            state: { article },
+            params: { articleId: article.id },
           }"
         >
           {{ article.title }}
@@ -18,20 +17,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, provide } from 'vue'
+import { callApi } from '../composable/callApi.js'
 
 const articlesList = ref([])
+provide('articlesList', articlesList.value)
 
 onMounted(async () => {
-  try {
-    const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=6')
-    if (!res.ok) {
-      throw new Error('Network response was not ok')
-    }
-    articlesList.value = await res.json()
-  } catch (error) {
-    console.error('There has been a problem with your fetch operation:', error)
-  }
+  articlesList.value = await callApi()
+  console.log(articlesList.value)
+  console.log('articlesList', articlesList.value)
 })
 </script>
 
