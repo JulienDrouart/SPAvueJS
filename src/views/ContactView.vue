@@ -24,6 +24,7 @@
       </div>
       <button type="submit">Envoyer</button>
     </form>
+    <p v-if="msg" style="color: black; background-color: #007a50">Le message à bien été envoyé !</p>
   </div>
 </template>
 
@@ -38,8 +39,11 @@
 </style>
 
 <script setup>
+import { ref } from 'vue'
+const msg = ref(false)
 const sendMsg = () => {
   alert('Message envoyé !')
   document.querySelector('form').reset()
+  msg.value = true
 }
 </script>
