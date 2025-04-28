@@ -4,12 +4,22 @@
 
     <div class="wrapper">
       <LeftPart :msg="titleLeft" />
-
       <nav>
         <RouterLink to="/">Accueil</RouterLink>
         <RouterLink :to="{ name: 'articles' }">Articles</RouterLink>
         <RouterLink to="/contact">Contact</RouterLink>
+        <RouterLink v-if="!store.user || store.user.username === null" to="/connect"
+          >Se connecter</RouterLink
+        >
       </nav>
+
+      <template v-if="store.user && store.user.username">
+        Connecté en tant que {{ store.user.username }}
+
+        <button v-if="store.user && store.user.username" @click="store.logout">
+          Se déconnecter
+        </button>
+      </template>
     </div>
   </header>
 
@@ -20,8 +30,12 @@
 import { RouterLink, RouterView } from 'vue-router'
 import LeftPart from './components/LeftPart.vue'
 import { onMounted, onBeforeUnmount, ref } from 'vue'
+import { useAuth } from '@/store/auth'
+
+const store = useAuth()
 
 const titleLeft = ref('Accueil')
+const connexion = ref('no')
 
 function handleNavClick(event) {
   titleLeft.value = ref(event.target.textContent)
