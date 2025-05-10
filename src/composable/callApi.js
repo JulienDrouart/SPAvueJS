@@ -1,10 +1,18 @@
-export const callApi = async () => {
+export const callApi = async (id) => {
   try {
-    const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=6')
+    let url = 'none'
+    if (id) {
+      url = `https://jsonplaceholder.typicode.com/posts/${id}`
+    } else {
+      url = 'https://jsonplaceholder.typicode.com/posts?_limit=6'
+    }
+
+    const res = await fetch(url)
     if (!res.ok) {
       throw new Error('Network response was not ok')
     }
-    return await res.json()
+    const returnData = await res.json()
+    return returnData
   } catch (error) {
     console.error('There has been a problem with your fetch operation:', error)
   }

@@ -14,11 +14,18 @@ import { useRoute } from 'vue-router'
 import { callApi } from '../composable/callApi.js'
 
 const route = useRoute()
-const article = ref(null)
+const articleId = route.params.articleId
 
-onMounted(async () => {
-  const allArticles = await callApi()
-  article.value = allArticles.find((a) => a.id.toString() === route.params.articleId)
+import { useQuery } from '@tanstack/vue-query'
+
+const {
+  data: article = null,
+  isLoading,
+  error,
+} = useQuery({
+  queryKey: ['article', articleId],
+  queryFn: () => callApi(articleId),
+  staleTime: 15_000,
 })
 </script>
 <style>

@@ -38,6 +38,11 @@ const titleLeft = ref('Accueil')
 const connexion = ref('no')
 
 function handleNavClick(event) {
+  // Vérifie si le lien cliqué est "Articles"
+  if (event.target.textContent.toLowerCase().includes('article')) {
+    titleLeft.value = 'un article'
+    return
+  }
   titleLeft.value = ref(event.target.textContent)
   // Utilisez linkText comme vous le souhaitez
   console.log('RouterLink cliqué:', titleLeft)
