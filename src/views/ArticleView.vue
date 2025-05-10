@@ -1,24 +1,25 @@
 <template>
-  <div>
-    <h1>Article {{ article }}</h1>
+  <div v-if="article">
+    <h1>{{ article.title }}</h1>
+    <p>{{ article.body }}</p>
+  </div>
+  <div v-else>
+    <p>Chargement de l'article...</p>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ref, onMounted, computed } from 'vue'
 import { callApi } from '../composable/callApi.js'
 
-const articlesList = ref([])
+const route = useRoute()
+const article = ref(null)
 
 onMounted(async () => {
-  articlesList.value = await callApi()
+  const allArticles = await callApi()
+  article.value = allArticles.find((a) => a.id.toString() === route.params.articleId)
 })
-
-const route = useRoute()
-const articleId = Number(route.params.articleId) // convertir en nombre si besoin
-
-const article = computed(() => articlesList.value.find((a) => a.id === articleId))
 </script>
 <style>
 @media (min-width: 1024px) {
