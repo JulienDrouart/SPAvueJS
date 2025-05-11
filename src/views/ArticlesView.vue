@@ -14,25 +14,46 @@
             {{ article.title }}
           </RouterLink>
         </li>
-      </template>
+        <li v-if="hasNextPage">
+          <button @click="fetchNextPage" :disabled="isFetching">
+            {{ isFetching ? 'Chargement...' : 'Charger plus' }}
+          </button>
+        </li></template
+      >
     </ul>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, provide } from 'vue'
+import { ref, onMounted, provide, effect, computed } from 'vue'
 import { callApi } from '../composable/callApi.js'
-import { useQuery } from '@tanstack/vue-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/vue-query'
 
-const {
-  data: articlesList = [],
-  isLoading,
-  error,
-} = useQuery({
-  queryKey: ['articles'],
-  queryFn: () => callApi(),
-  staleTime: 15_000,
+const { data, isLoading, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
+  queryKey: ['articlesList'],
+  initialPageParam: 1,
+  queryFn: ({ pageParam }) => callApi({ id: null, page: pageParam }),
+  getNextPageParam: (lastPage, pages) => {
+    const hasMore = lastPage.length === 6
+    return hasMore ? pages.length + 1 : undefined
+  },
 })
+effect(() => {
+  console.log('data', data.value)
+})
+const articlesList = computed(() => {
+  return data.value?.pages.flat() ?? []
+})
+
+// const {
+//   data: articlesList = [],
+//   isLoading,
+//   error,
+// } = useQuery({
+//   queryKey: ['articles'],
+//   queryFn: () => callApi({ id: null, page: null }),
+//   staleTime: 15_000,
+// })
 
 // const articlesList = ref([])
 // provide('articlesList', articlesList.value)

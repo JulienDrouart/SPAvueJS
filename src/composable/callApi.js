@@ -1,10 +1,12 @@
-export const callApi = async (id) => {
+export const callApi = async ({ id, page }) => {
   try {
     let url = 'none'
     if (id) {
       url = `https://jsonplaceholder.typicode.com/posts/${id}`
     } else {
-      url = 'https://jsonplaceholder.typicode.com/posts?_limit=6'
+      const limit = 6
+      const start = (page - 1) * limit
+      url = `https://jsonplaceholder.typicode.com/posts?_start=${start}&_limit=${limit}`
     }
 
     const res = await fetch(url)

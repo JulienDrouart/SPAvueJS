@@ -24,7 +24,7 @@ const {
   error,
 } = useQuery({
   queryKey: ['article', articleId],
-  queryFn: () => callApi(articleId),
+  queryFn: () => callApi({ id: articleId, page: null }),
   staleTime: 15_000,
 })
 </script>
